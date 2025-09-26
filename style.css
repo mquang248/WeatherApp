@@ -1,0 +1,376 @@
+.astro-card h2 { margin: 0 0 8px; }
+.astro-row { margin: 6px 0; }
+/*
+  Weather App Styles
+  - Modern, minimal, responsive
+  - Chế độ sáng mặc định (.theme-light)
+  - Dynamic backgrounds via .bg-sunny, .bg-rain, .bg-clouds, .bg-snow, .bg-default
+*/
+
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffffcc;
+  --text: #0f172a;
+  --muted: #334155;
+  --primary: #0ea5e9;
+  --accent: #22c55e;
+  --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+  --col-min-h: 520px;
+}
+
+/* Đã bỏ hỗ trợ dark mode */
+
+/* Dynamic weather background hints */
+body.bg-sunny { background: linear-gradient(120deg, #fff1a6, #ffd06a, #ffb347); }
+body.bg-rain { background: linear-gradient(135deg, #6b7280, #4b5563, #374151); }
+body.bg-clouds { background: linear-gradient(135deg, #cbd5e1, #94a3b8, #64748b); }
+body.bg-snow { background: linear-gradient(135deg, #e0f2fe, #e2e8f0, #cbd5e1); }
+body.bg-default { background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd); }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background-attachment: fixed;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 32px);
+  position: relative;
+  z-index: 5;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .logo { font-size: 26px; }
+.brand .logo-img { width: 68px; height: 68px; object-fit: contain; display: block; }
+.brand h1 { margin: 0; font-size: 22px; letter-spacing: 0.3px; }
+
+.controls { display: flex; align-items: center; gap: 12px; }
+.search {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+.search { position: relative; }
+.search { position: relative; }
+/* suggestions removed */
+.search input {
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 0;
+  outline: none;
+  border-radius: 8px;
+  background: #ffffff80;
+}
+.search button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+}
+.search .ghost { background: transparent; color: var(--text); border: 1px solid #ffffff40; }
+
+/* Đã bỏ phần toggles cho dark mode */
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px) 32px; }
+
+/* 2 cột: trái current, phải forecast + hourly */
+.layout-two-col { display: grid; grid-template-columns: 360px 1fr; gap: 12px; align-items: start; grid-auto-rows: min-content; }
+.current-card { grid-column: 1 / 2; grid-row: 1; align-self: stretch; display: flex; min-height: var(--col-min-h); }
+.right-stack { grid-column: 2 / 3; display: grid; gap: 16px; grid-row: 1; align-self: stretch; min-height: var(--col-min-h); }
+/* Đặt thẻ thiên văn hiển thị dọc dưới thẻ 1 (cột trái) */
+.astro-card { grid-column: 1 / 2; grid-row: 2; }
+.astro-card .astro-row { display: block; }
+
+#fx-layer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0; top: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  /* Ẩn hiệu ứng trên vùng header bằng mask để không tạo vạch phân cách */
+  -webkit-mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,0) 0,
+    rgba(0,0,0,0) calc(var(--fx-top, 0px) - 30px),
+    rgba(0,0,0,0.6)  calc(var(--fx-top, 0px) - 5px),
+    rgba(0,0,0,1)  calc(var(--fx-top, 0px) + 20px)
+  );
+  mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,0) 0,
+    rgba(0,0,0,0) calc(var(--fx-top, 0px) - 30px),
+    rgba(0,0,0,0.6)  calc(var(--fx-top, 0px) - 5px),
+    rgba(0,0,0,1)  calc(var(--fx-top, 0px) + 20px)
+  );
+}
+
+.alert {
+  margin: 10px 0 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #ef44441a;
+  color: #7f1d1d;
+  box-shadow: var(--shadow);
+}
+
+.panel { background: var(--card); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.apikey-row { display: none; }
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin: 16px 0;
+  backdrop-filter: blur(8px);
+}
+
+.current-vertical { display: grid; gap: 8px; align-content: start; width: 100%; }
+.c-row { font-size: 16px; }
+.temp-row { font-size: 22px; font-weight: 700; }
+.city-row { font-size: 18px; font-weight: 700; }
+.astro-title { font-size: 18px; font-weight: 700; }
+.feel { font-weight: 500; color: var(--muted); font-size: 14px; }
+.city { color: var(--muted); }
+.meta { margin: 6px 0; color: var(--muted); }
+.meta.small { font-size: 12px; }
+
+.forecast-card h2, .history-card h2 { margin: 0 0 10px; }
+.hourly-card h2 { margin: 0 0 10px; }
+.forecast-grid { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 10px; }
+.forecast-item {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #ffffff66;
+}
+.forecast-item .day { font-weight: 600; }
+.forecast-item .fi-icon { font-size: 28px; }
+.forecast-item .fi-temp { font-weight: 600; }
+
+/* Hourly strip */
+.hourly-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 10px;
+  overflow-x: hidden;
+  padding-bottom: 6px;
+}
+.hourly-item {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #ffffff66;
+  min-width: 110px;
+  text-align: center;
+}
+.hourly-item .h-time { font-weight: 600; }
+.hourly-item .h-icon { font-size: 22px; }
+.hourly-item .h-temp { font-weight: 600; }
+
+.history-header { display: flex; justify-content: space-between; align-items: center; }
+.history-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.history-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #ffffff66; border-radius: 10px; }
+.history-list button { border: 0; background: transparent; cursor: pointer; color: var(--muted); }
+
+/* Ẩn hoàn toàn phần lịch sử tìm kiếm theo yêu cầu */
+.history-card { display: none !important; }
+
+/* Nicer danger button for clearing history */
+.btn-danger {
+  background: linear-gradient(180deg, #ef4444, #dc2626);
+  color: #fff !important;
+  border: 0 !important;
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  transition: transform .1s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn-danger::before { content: "🗑️"; }
+.btn-danger:hover { filter: brightness(1.05); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45); }
+.btn-danger:active { transform: translateY(1px); }
+
+.app-footer { text-align: center; padding: 20px; color: var(--muted); }
+
+/* Weather FX */
+.fx { position: absolute; will-change: transform, opacity, filter; }
+
+/* Rain */
+.raindrop {
+  width: var(--w, 2px); height: var(--h, 14px);
+  background: linear-gradient(to bottom, #e0f2ff, #7fb2ff);
+  border-radius: 1px;
+  opacity: var(--o, 0.75);
+  transform: translateZ(0);
+  animation: rain-fall var(--dur, 1.8s) linear infinite;
+}
+@keyframes rain-fall {
+  0% { transform: translateY(-12vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(112vh) translateX(var(--drift, -10px)); opacity: 0.25; }
+}
+
+.splash {
+  width: var(--sw, 10px); height: var(--sh, 2px);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #cfe6ff, transparent);
+  bottom: 2vh; left: 0;
+  animation: splash 0.6s ease-out forwards;
+}
+@keyframes splash {
+  from { transform: translate(var(--sx, 0), 0) scale(0.6); opacity: .6; }
+  to { transform: translate(var(--sx, 0), 0) scale(1.8); opacity: 0; }
+}
+
+/* Snow */
+.snowflake {
+  width: 6px; height: 6px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 6px #fff8;
+  animation: snow-fall linear infinite;
+}
+@keyframes snow-fall {
+  0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.9; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  100% { transform: translateY(110vh) translateX(-10px); opacity: 0.6; }
+}
+
+/* Clouds */
+.cloud {
+  width: var(--cw, 220px); height: var(--ch, 130px);
+  background-image: url('cloud.png');
+  background-repeat: no-repeat; background-size: contain; background-position: center;
+  filter: blur(var(--cblur, 0.6px));
+  animation: cloud-drift var(--cdur, 45s) linear infinite;
+  position: absolute;
+}
+.cloud.layer-back { opacity: 0.55; filter: blur(calc(var(--cblur, 1px) + 0.8px)); }
+.cloud.layer-mid { opacity: 0.75; }
+.cloud.layer-front { opacity: 0.95; filter: blur(calc(var(--cblur, 1px))); }
+/* sprite cloud không dùng phần tử tạo hình cũ */
+.cloud::before, .cloud::after { display: none; }
+@keyframes cloud-drift { from { transform: translateX(-20%); } to { transform: translateX(120%); } }
+
+/* Fluffy puffs inside cloud */
+.cloud .puff { display: none; }
+
+/* Sun rays */
+.sunrays {
+  position: absolute; width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, #ffd16666, transparent 60%);
+  animation: sun-pulse 3s ease-in-out infinite;
+}
+@keyframes sun-pulse { 0%,100%{ transform: scale(1); opacity: .7 } 50% { transform: scale(1.1); opacity: 1 } }
+
+/* Lightning */
+.flash {
+  position: absolute; inset: 0; background: linear-gradient(180deg, #ffffff33, #ffffff00);
+  animation: flash-pop 0.9s ease-out forwards;
+}
+@keyframes flash-pop {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (max-width: 720px) {
+  .layout-two-col { grid-template-columns: 1fr; }
+  .current-card { grid-column: 1 / -1; min-height: auto; }
+  .right-stack { grid-column: 1 / -1; min-height: auto; }
+  .search input { min-width: 140px; }
+}
+
+/* Mobile-first refinements */
+@media (max-width: 720px) {
+  body { background-attachment: scroll; }
+  :root { --col-min-h: 0px; }
+
+  .app-header { flex-wrap: wrap; gap: 12px; padding: 10px 12px; position: sticky; top: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06); z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.4); }
+  .brand .logo-img { width: 48px; height: 48px; }
+  .brand h1 { font-size: 18px; }
+
+  .container { padding: 8px 12px 20px; }
+
+  /* Search bar fills width and wraps nicely */
+  .controls { width: 100%; }
+  .search { width: 100%; flex-wrap: wrap; padding: 6px; gap: 6px; border-radius: 12px; }
+  .search input { flex: 1 1 180px; min-width: 0; padding: 10px 10px; font-size: 15px; }
+  .search button, .search .ghost { flex: 0 0 auto; padding: 10px 12px; border-radius: 10px; }
+
+  /* Typography scale down a bit for compact view */
+  .c-row { font-size: 14.5px; line-height: 1.35; }
+  .temp-row { font-size: 19px; }
+  .city-row, .astro-title { font-size: 16px; }
+  .feel { font-size: 12.5px; }
+
+  /* Cards: reduce padding and outer margins for more content per view */
+  .card { padding: 12px; margin: 12px 0; border-radius: 14px; }
+
+  /* Forecast grid: 2 columns on phones */
+  .forecast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .forecast-card h2, .hourly-card h2 { font-size: 16px; }
+  .forecast-item { padding: 10px; gap: 4px; border-radius: 12px; background: #ffffff90; border: 1px solid rgba(255,255,255,0.6); }
+  .forecast-item .day { font-size: 13px; }
+  .forecast-item .fi-icon { font-size: 22px; }
+  .forecast-item .fi-temp { font-size: 14px; }
+
+  /* Hourly: horizontal scroll with snap */
+  .hourly-strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    grid-auto-flow: column;
+    grid-auto-columns: 140px;
+    grid-template-columns: none;
+    padding-bottom: 10px;
+  }
+  .hourly-item { min-width: 140px; scroll-snap-align: start; }
+
+  /* Reduce visual clutter from FX on phones */
+  #fx-layer, .cloud { display: none; }
+}
+
+/* Apple-like visual tweaks — mobile only (desktop unaffected) */
+@media (max-width: 720px) {
+  .current-vertical { text-align: center; }
+  .city-row { font-size: 20px; font-weight: 800; letter-spacing: 0.2px; }
+  .temp-row { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; }
+  .desc-row { opacity: 0.9; }
+
+  /* Forecast rows: day | desc | temp at right */
+  .forecast-item { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; background: rgba(255,255,255,0.85); border: 1px solid rgba(15,23,42,0.06); }
+  .forecast-item .day { justify-self: start; }
+  .forecast-item .fi-icon { grid-column: 2; }
+  .forecast-item .fi-desc { display: none; }
+  .forecast-item .fi-temp { grid-column: 3; justify-self: end; font-weight: 700; }
+  .forecast-item + .forecast-item { border-top: 1px solid rgba(15,23,42,0.06); }
+}
+
+@media (max-width: 480px) {
+  .brand .logo-img { width: 40px; height: 40px; }
+  .brand h1 { font-size: 16px; }
+  .search input { flex-basis: 160px; }
+  .forecast-grid { grid-template-columns: 1fr; }
+  .forecast-item { padding: 10px; }
+  .hourly-strip { grid-auto-columns: 120px; }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+

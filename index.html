@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://api.openweathermap.org" />
+  <meta name="theme-color" content="#0ea5e9" />
+    <!-- Favicon/App icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="weather.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="weather.png" />
+    <link rel="shortcut icon" href="weather.png" />
+    <link rel="apple-touch-icon" href="weather.png" />
+    <meta name="msapplication-TileImage" content="weather.png" />
+</head>
+<body class="theme-light bg-default">
+  <header class="app-header">
+    <div class="brand">
+      <img class="logo-img" src="weather.png" alt="Weather" />
+      <h1>WeatherAPP</h1>
+    </div>
+
+    <div class="controls">
+      <form id="search-form" class="search" autocomplete="off">
+        <input id="city-input" type="text" placeholder="Nhập tên thành phố" aria-label="Thành phố" />
+        <button type="submit" title="Tìm kiếm" aria-label="Tìm kiếm">Tìm</button>
+        <button type="button" id="btn-location" class="ghost" title="Lấy vị trí hiện tại" aria-label="Lấy vị trí hiện tại">➤</button>
+      </form>
+
+      
+    </div>
+  </header>
+
+  <main class="container layout-two-col">
+    <div id="fx-layer" aria-hidden="true"></div>
+    <section id="alert" class="alert" role="status" aria-live="polite" hidden></section>
+
+    <section id="current" class="card current-card">
+      <div class="current-vertical">
+        <div class="c-row city-row">🏙 <span id="current-city">—</span></div>
+        <div class="c-row temp-row">🌡 <span id="current-temp">--°C</span> <span class="feel">(Cảm giác: <span id="current-feels">--°C</span>)</span></div>
+        <div class="c-row desc-row">🌥️ <span id="current-desc">—</span></div>
+        <div class="c-row hw-row">💧 Độ ẩm: <span id="current-humidity">—</span>% &nbsp;&nbsp; 🌬️ Gió: <span id="current-wind">—</span></div>
+        <div class="c-row sun-row">🌅Bình Minh: <span id="current-sunrise">--:--</span> &nbsp;&nbsp; 🌇 Hoàng Hôn: <span id="current-sunset">--:--</span></div> 
+        <div class="c-row uv-row">🔆 Chỉ số UV: <strong id="current-uv">—</strong></div>
+        <hr />
+        <hr />
+        <div class="c-row astro-title">🌠 Trường Ca Nhật Nguyệt</div>
+        <div class="c-row">Giai đoạn mặt trăng: <strong id="astro-moon">—</strong></div>
+        <div class="c-row">Độ dài ngày/đêm: <strong id="astro-daylen">—</strong></div>
+        <div class="c-row">Hoạt động gợi ý: <strong id="astro-suggest">—</strong></div>
+        <div class="c-row">Gợi ý hành động: <strong id="daily-tip">—</strong></div>
+        <div class="c-row updated-row"><span class="meta small" id="current-updated">—</span></div>
+      </div>
+    </section>
+
+    <section class="card forecast-card right-stack">
+      <div>
+      <h2>Dự báo 5 ngày</h2>
+      <div id="forecast" class="forecast-grid"></div>
+      </div>
+
+      <div class="card hourly-card" style="margin:0">
+        <h2>Dự báo theo giờ</h2>
+        <div id="hourly" class="hourly-strip" aria-live="polite"></div>
+      </div>
+    </section>
+
+    
+  </main>
+
+  
+
+  <script src="script.js" defer></script>
+</body>
+</html>
+
+
