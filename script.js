@@ -9,21 +9,21 @@ const STORAGE_KEYS = {
 };
 
  
-const DEFAULT_API_KEY = "92b23012ad5c06f1986806eb7dd045db"; // có thể thay bằng khóa khác trong UI
-const DEFAULT_CITY = "Hanoi"; // Thành phố mặc định khi không lấy được vị trí
+const DEFAULT_API_KEY = "92b23012ad5c06f1986806eb7dd045db"; // can be replaced in UI
+const DEFAULT_CITY = "Hanoi"; // Default city when location is unavailable
 const OW_BASE = "https://api.openweathermap.org";
  
 const GEOCODING_URL = (q, limit = 1, apiKey) =>
   `${OW_BASE}/geo/1.0/direct?q=${encodeURIComponent(q)}&limit=${limit}&appid=${apiKey}`;
  
 const CURRENT_URL = (lat, lon, apiKey) =>
-  `${OW_BASE}/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${apiKey}`;
+  `${OW_BASE}/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=en&appid=${apiKey}`;
  
 const FORECAST_URL = (lat, lon, apiKey) =>
-  `${OW_BASE}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${apiKey}`;
+  `${OW_BASE}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=en&appid=${apiKey}`;
 
  
-const OM_GEOCODE = (q, count = 1) => `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=${count}&language=vi&format=json`;
+const OM_GEOCODE = (q, count = 1) => `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=${count}&language=en&format=json`;
 const OM_FORECAST = (lat, lon) => {
   const daily = [
     "weathercode",
@@ -62,8 +62,8 @@ async function fetchUVIndexOM(lat, lon) {
 }
 
  
-const NOMINATIM_REVERSE = (lat, lon) => `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=jsonv2&accept-language=vi`;
-const NOMINATIM_SEARCH = (q, limit = 1) => `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&accept-language=vi&addressdetails=1&limit=${limit}`;
+const NOMINATIM_REVERSE = (lat, lon) => `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=jsonv2&accept-language=en`;
+const NOMINATIM_SEARCH = (q, limit = 1) => `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&accept-language=en&addressdetails=1&limit=${limit}`;
  
 
  
@@ -121,11 +121,11 @@ function formatTemp(c) { return `${Math.round(c)}°C`; }
 function formatWind(ms) { return `${ms.toFixed(1)} m/s`; }
 function formatDate(ts) {
   const d = new Date(ts);
-  return new Intl.DateTimeFormat("vi-VN", { weekday: "short", hour: "2-digit", minute: "2-digit" }).format(d);
+  return new Intl.DateTimeFormat("en-US", { weekday: "short", hour: "2-digit", minute: "2-digit" }).format(d);
 }
 function formatDay(ts) {
   const d = new Date(ts);
-  return new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(d);
+  return new Intl.DateTimeFormat("en-US", { weekday: "short", day: "2-digit", month: "2-digit" }).format(d);
 }
 
  
@@ -147,15 +147,15 @@ function mapWeatherToIconAndBg(main, desc) {
 function countryCodeToName(code) {
   if (!code) return "";
   try {
-    const dn = new Intl.DisplayNames(["vi", "en"], { type: "region" });
+    const dn = new Intl.DisplayNames(["en"], { type: "region" });
     const name = dn.of(String(code).toUpperCase());
     if (name && name !== code) return name;
   } catch {}
   const fallback = {
-    VN: "Việt Nam", JP: "Nhật Bản", US: "Hoa Kỳ", GB: "Vương quốc Anh", FR: "Pháp",
-    DE: "Đức", KR: "Hàn Quốc", CN: "Trung Quốc", TH: "Thái Lan", SG: "Singapore",
-    MY: "Malaysia", ID: "Indonesia", AU: "Úc", CA: "Canada", RU: "Nga",
-    IT: "Ý", ES: "Tây Ban Nha"
+    VN: "Vietnam", JP: "Japan", US: "United States", GB: "United Kingdom", FR: "France",
+    DE: "Germany", KR: "South Korea", CN: "China", TH: "Thailand", SG: "Singapore",
+    MY: "Malaysia", ID: "Indonesia", AU: "Australia", CA: "Canada", RU: "Russia",
+    IT: "Italy", ES: "Spain"
   };
   return fallback[String(code).toUpperCase()] || String(code).toUpperCase();
 }
@@ -196,14 +196,14 @@ function buildLabelFromNominatim(address = {}) {
  
 function mapOMCode(code) {
   const c = Number(code);
-  // Nguồn: https://open-meteo.com/en/docs#api_form
-  if ([0].includes(c)) return { icon: "☀️", bg: "bg-sunny", desc: "Trời quang" };
-  if ([1,2,3].includes(c)) return { icon: "⛅", bg: "bg-clouds", desc: "Ít mây / Nhiều mây" };
-  if ([45,48].includes(c)) return { icon: "🌫️", bg: "bg-clouds", desc: "Sương mù" };
-  if ([51,53,55,56,57].includes(c)) return { icon: "🌦️", bg: "bg-rain", desc: "Mưa phùn" };
-  if ([61,63,65,66,67,80,81,82].includes(c)) return { icon: "🌧️", bg: "bg-rain", desc: "Mưa" };
-  if ([71,73,75,77,85,86].includes(c)) return { icon: "❄️", bg: "bg-snow", desc: "Tuyết" };
-  if ([95,96,99].includes(c)) return { icon: "⛈️", bg: "bg-rain", desc: "Dông" };
+  // Source: https://open-meteo.com/en/docs#api_form
+  if ([0].includes(c)) return { icon: "☀️", bg: "bg-sunny", desc: "Clear" };
+  if ([1,2,3].includes(c)) return { icon: "⛅", bg: "bg-clouds", desc: "Partly cloudy / Cloudy" };
+  if ([45,48].includes(c)) return { icon: "🌫️", bg: "bg-clouds", desc: "Fog" };
+  if ([51,53,55,56,57].includes(c)) return { icon: "🌦️", bg: "bg-rain", desc: "Drizzle" };
+  if ([61,63,65,66,67,80,81,82].includes(c)) return { icon: "🌧️", bg: "bg-rain", desc: "Rain" };
+  if ([71,73,75,77,85,86].includes(c)) return { icon: "❄️", bg: "bg-snow", desc: "Snow" };
+  if ([95,96,99].includes(c)) return { icon: "⛈️", bg: "bg-rain", desc: "Thunderstorm" };
   return { icon: "⛅", bg: "bg-default", desc: "" };
 }
 
@@ -217,7 +217,7 @@ function applyTheme(theme) {
 
  
 function getApiKey() {
-  // Ưu tiên khóa trong LocalStorage; nếu chưa có thì dùng khóa mặc định được cung cấp
+  // Prefer key in LocalStorage; fallback to provided default key
   return localStorage.getItem(STORAGE_KEYS.API_KEY) || DEFAULT_API_KEY || "";
 }
 function ensureApiKeyOrExplain(silent = false) {
@@ -235,7 +235,7 @@ function setLastCoords(lat, lon) {
     localStorage.setItem(STORAGE_KEYS.LAST_COORDS, JSON.stringify(payload));
   } catch {}
 }
-function getLastCoords(maxAgeMs = 30 * 60 * 1000) { // 30 phút
+function getLastCoords(maxAgeMs = 30 * 60 * 1000) { // 30 minutes
   try {
     const v = JSON.parse(localStorage.getItem(STORAGE_KEYS.LAST_COORDS) || "null");
     if (v && v.t && (Date.now() - v.t) <= maxAgeMs && typeof v.lat === "number" && typeof v.lon === "number") {
@@ -249,7 +249,7 @@ function addToHistory(city) {
   const trimmed = city.trim();
   if (!trimmed) return;
   const h = getHistory();
-  // tránh trùng, đưa lên đầu
+  // avoid duplicates, move to top
   const next = [trimmed, ...h.filter(c => c.toLowerCase() !== trimmed.toLowerCase())];
   setHistory(next);
   renderHistory();
@@ -263,34 +263,34 @@ async function geocodeCity(city, apiKey) {
   if (!res.ok) {
     let detail = "";
     try { const j = await res.json(); detail = j?.message ? `: ${j.message}` : ""; } catch {}
-    throw new Error(`Geocoding thất bại (HTTP ${res.status})${detail}`);
+    throw new Error(`Geocoding failed (HTTP ${res.status})${detail}`);
   }
   const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) throw new Error("Không tìm thấy thành phố");
+  if (!Array.isArray(data) || data.length === 0) throw new Error("City not found");
   const { name, lat, lon, country, state } = data[0];
   return { name, lat, lon, country, state };
 }
 
 async function fetchCurrent(lat, lon, apiKey) {
   const res = await fetch(CURRENT_URL(lat, lon, apiKey));
-  if (!res.ok) throw new Error("Không lấy được thời tiết hiện tại");
+  if (!res.ok) throw new Error("Failed to fetch current weather");
   return await res.json();
 }
 
 async function fetchForecast(lat, lon, apiKey) {
   const res = await fetch(FORECAST_URL(lat, lon, apiKey));
-  if (!res.ok) throw new Error("Không lấy được dự báo");
+  if (!res.ok) throw new Error("Failed to fetch forecast");
   return await res.json();
 }
 
  
 async function fetchCurrentByCity(city, apiKey) {
-  const url = `${OW_BASE}/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&lang=vi&appid=${apiKey}`;
+  const url = `${OW_BASE}/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&lang=en&appid=${apiKey}`;
   const res = await fetch(url);
   if (!res.ok) {
     let detail = "";
     try { const j = await res.json(); detail = j?.message ? `: ${j.message}` : ""; } catch {}
-    throw new Error(`Không lấy được thời tiết cho thành phố (HTTP ${res.status})${detail}`);
+    throw new Error(`Failed to fetch weather by city (HTTP ${res.status})${detail}`);
   }
   return await res.json();
 }
@@ -298,10 +298,10 @@ async function fetchCurrentByCity(city, apiKey) {
  
 async function omGeocodeCity(city) {
   const res = await fetch(OM_GEOCODE(city, 1));
-  if (!res.ok) throw new Error("Open-Meteo geocoding thất bại");
+  if (!res.ok) throw new Error("Open-Meteo geocoding failed");
   const data = await res.json();
   const f = data?.results?.[0];
-  if (!f) throw new Error("Không tìm thấy thành phố (OM)");
+  if (!f) throw new Error("City not found (OM)");
   return {
     name: f.name,
     lat: f.latitude,
@@ -313,7 +313,7 @@ async function omGeocodeCity(city) {
 
 async function omFetch(lat, lon) {
   const res = await fetch(OM_FORECAST(lat, lon));
-  if (!res.ok) throw new Error("Không lấy được dữ liệu Open-Meteo");
+  if (!res.ok) throw new Error("Failed to fetch Open-Meteo data");
   const j = await res.json();
   return j;
 }
@@ -321,11 +321,11 @@ async function omFetch(lat, lon) {
 async function reverseGeocode(lat, lon) {
   const url = NOMINATIM_REVERSE(lat, lon);
   const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-  if (!res.ok) throw new Error("Reverse geocoding thất bại");
+  if (!res.ok) throw new Error("Reverse geocoding failed");
   const j = await res.json();
   const a = j.address || {};
-  // Ưu tiên hiển thị: "Thành phố, Tỉnh/Thành, Quốc gia" (VD: "Dĩ An, Bình Dương, Việt Nam")
-  // Lấy city ứng viên ở nhiều cấp (ưu tiên city/town, sau đó đến city_district/county)
+  // Preferred display: "City, State/Province, Country"
+  // Get candidate city from multiple levels (city/town prioritized)
   const rawCity = a.city || a.town || a.municipality || a.village || a.city_district || a.county || "";
   const wardLike = /^(phường|xã|thị trấn|thi\s*tran|phuong|xa|ward|commune)/i.test(rawCity);
   // Nếu city có vẻ là phường/xã, thay bằng city/town thực hoặc county/tỉnh
@@ -334,7 +334,7 @@ async function reverseGeocode(lat, lon) {
   const countryCode = (a.country_code || "").toUpperCase();
   const countryName = a.country || countryCodeToName(countryCode) || countryCode;
 
-  // Fallback: nếu không có city thì dùng tỉnh hoặc county
+  // Fallback: if no city, use province or county
   const locality = (city && city.trim()) ? city : (province || a.county || a.country || "");
 
   const parts = [locality, province, countryName]
@@ -346,9 +346,9 @@ async function reverseGeocode(lat, lon) {
 
 async function nominatimSearch(q) {
   const res = await fetch(NOMINATIM_SEARCH(q, 1), { headers: { 'Accept': 'application/json' } });
-  if (!res.ok) throw new Error("Nominatim search thất bại");
+  if (!res.ok) throw new Error("Nominatim search failed");
   const arr = await res.json();
-  if (!Array.isArray(arr) || arr.length === 0) throw new Error("Không tìm thấy địa điểm");
+  if (!Array.isArray(arr) || arr.length === 0) throw new Error("Place not found");
   const item = arr[0];
   const lat = Number(item.lat);
   const lon = Number(item.lon);
@@ -365,7 +365,7 @@ function summarizeForecast(list) {
     byDay.get(date).push(item);
   });
   const days = Array.from(byDay.entries())
-    .slice(0, 6) // có thể bao gồm hôm nay; sẽ bỏ nếu vượt 5 ngày
+    .slice(0, 6) // may include today; trimmed to 5 days
     .map(([date, items]) => {
       // tìm mốc gần 12:00
       let pick = items.reduce((best, cur) => {
@@ -392,10 +392,10 @@ function renderCurrent(cityLabel, data) {
   el.curDesc.textContent = desc.charAt(0).toUpperCase() + desc.slice(1);
   el.curHumidity.textContent = String(data.main.humidity ?? "-");
   el.curWind.textContent = formatWind(data.wind?.speed || 0);
-  el.curUpdated.textContent = `Cập nhật: ${formatDate(Date.now())}`;
+  el.curUpdated.textContent = `Updated: ${formatDate(Date.now())}`;
   if (el.curFeels) el.curFeels.textContent = formatTemp(data.main.feels_like ?? data.main.temp);
-  if (el.curSunrise) try { el.curSunrise.textContent = new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(new Date((data.sys?.sunrise ?? 0) * 1000)); } catch {}
-  if (el.curSunset) try { el.curSunset.textContent = new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(new Date((data.sys?.sunset ?? 0) * 1000)); } catch {}
+  if (el.curSunrise) try { el.curSunrise.textContent = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit" }).format(new Date((data.sys?.sunrise ?? 0) * 1000)); } catch {}
+  if (el.curSunset) try { el.curSunset.textContent = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit" }).format(new Date((data.sys?.sunset ?? 0) * 1000)); } catch {}
 
   
   try {
@@ -412,27 +412,27 @@ function renderCurrent(cityLabel, data) {
         const mins = Math.round((diffMs % 3600000) / 60000);
         const nightHrs = 24 - hrs - Math.floor((mins)/60);
         const nightMins = (60 - (mins % 60)) % 60;
-        el.astroDaylen.textContent = `Ban ngày dài ${hrs}h ${mins}m, ban đêm ${nightHrs}h ${nightMins}m`;
+        el.astroDaylen.textContent = `Daytime ${hrs}h ${mins}m, nighttime ${nightHrs}h ${nightMins}m`;
       }
     }
     if (el.astroSuggest) {
       const mainLower = (data.weather?.[0]?.main || '').toLowerCase();
       let s = '—';
-      if (mainLower.includes('clear')) s = 'Thời tiết tuyệt vời cho chạy bộ 🏃‍♂️';
-      else if (mainLower.includes('rain') || mainLower.includes('drizzle')) s = 'Lý tưởng để ở nhà xem phim 🎬';
-      else if ((data.wind?.speed || 0) >= 8) s = 'Cẩn thận khi đi xe máy 🛵';
-      else s = 'Thời tiết ổn để dạo phố 🚶‍♂️';
+      if (mainLower.includes('clear')) s = 'Great weather for a run 🏃‍♂️';
+      else if (mainLower.includes('rain') || mainLower.includes('drizzle')) s = 'Perfect for a cozy movie at home 🎬';
+      else if ((data.wind?.speed || 0) >= 8) s = 'Be cautious when riding a bike';
+      else s = 'Nice weather for a walk';
       el.astroSuggest.textContent = s;
     }
     if (el.dailyTip) {
       const temp = data.main?.temp ?? 0;
       const m = (data.weather?.[0]?.main || '').toLowerCase();
       let tip = '—';
-      if (m.includes('rain') || m.includes('drizzle')) tip = 'Đừng quên mang ô nhé!';
-      else if (temp <= 16) tip = 'Mặc áo ấm và uống trà nóng.';
-      else if (temp >= 34) tip = 'Uống nhiều nước và tránh ra nắng giữa trưa.';
-      else if (m.includes('clear')) tip = 'Mang kính râm & bôi kem chống nắng.';
-      else tip = 'Chúc bạn một ngày thuận lợi!';
+      if (m.includes('rain') || m.includes('drizzle')) tip = 'Don\'t forget an umbrella!';
+      else if (temp <= 16) tip = 'Wear something warm and sip hot tea.';
+      else if (temp >= 34) tip = 'Stay hydrated and avoid midday sun.';
+      else if (m.includes('clear')) tip = 'Wear sunglasses and sunscreen.';
+      else tip = 'Have a great day!';
       el.dailyTip.textContent = tip;
     }
   } catch {}
@@ -475,7 +475,7 @@ function renderHourly(list) {
     const div = document.createElement("div");
     div.className = "hourly-item";
     const t = new Date(it.dt * 1000);
-    const time = new Intl.DateTimeFormat("vi-VN", { weekday: "short", hour: "2-digit", minute: "2-digit" }).format(t);
+  const time = new Intl.DateTimeFormat("en-US", { weekday: "short", hour: "2-digit", minute: "2-digit" }).format(t);
     div.innerHTML = `
       <div class="h-time">${time}</div>
       <div class="h-icon">${icon}</div>
@@ -495,7 +495,7 @@ function renderCurrentOM(cityLabel, data) {
   el.curDesc.textContent = m.desc || "—";
   el.curHumidity.textContent = "-"; // OM gói đơn giản không có độ ẩm hiện tại
   el.curWind.textContent = `${(cw.windspeed ?? 0).toFixed(1)} m/s`;
-  el.curUpdated.textContent = `Cập nhật: ${formatDate(new Date(cw.time))}`;
+  el.curUpdated.textContent = `Updated: ${formatDate(new Date(cw.time))}`;
   if (el.curFeels) el.curFeels.textContent = formatTemp(cw.temperature ?? 0);
   if (el.curSunrise) el.curSunrise.textContent = "--:--";
   if (el.curSunset) el.curSunset.textContent = "--:--";
@@ -524,9 +524,9 @@ function renderCurrentOM(cityLabel, data) {
     if (el.astroSuggest) {
       const k = (m.desc || '').toLowerCase();
       let s = '—';
-      if (k.includes('trời quang')) s = 'Thời tiết tuyệt vời cho chạy bộ 🏃‍♂️';
-      else if (k.includes('mưa')) s = 'Lý tưởng để ở nhà xem phim 🎬';
-      else s = 'Thời tiết ổn để dạo phố 🚶‍♂️';
+      if (k.includes('clear')) s = 'Great weather for a run 🏃‍♂️';
+      else if (k.includes('rain') || k.includes('drizzle')) s = 'Perfect for a cozy movie at home 🎬';
+      else s = 'Nice weather for a walk 🚶‍♂️';
       el.astroSuggest.textContent = s;
     }
   } catch {}
@@ -534,7 +534,7 @@ function renderCurrentOM(cityLabel, data) {
   el.body.classList.remove("bg-sunny", "bg-rain", "bg-clouds", "bg-snow", "bg-default");
   el.body.classList.add(m.bg);
   
-  const kind = m.desc.toLowerCase().includes("tuyết") ? "snow" : m.desc.toLowerCase().includes("mưa") ? "rain" : m.desc.toLowerCase().includes("trời quang") ? "sunny" : "clouds";
+  const kind = m.desc.toLowerCase().includes("snow") ? "snow" : m.desc.toLowerCase().includes("rain") ? "rain" : m.desc.toLowerCase().includes("clear") ? "sunny" : "clouds";
   renderEffectsByCondition(kind);
 }
 
@@ -606,7 +606,7 @@ async function updateWeatherByCoords(lat, lon, label, { silent = false } = {}) {
 async function searchByCity(city, { silent = false } = {}) {
   const apiKey = ensureApiKeyOrExplain(silent);
   const q = city?.trim() || el.input.value.trim();
-  if (!q) return showAlert("Vui lòng nhập tên thành phố");
+  if (!q) return showAlert("Please enter a city name");
   clearAlert();
   try {
     const found = await nominatimSearch(q);
@@ -618,7 +618,7 @@ async function searchByCity(city, { silent = false } = {}) {
         renderCurrentOM(found.label, om);
         renderForecastOM(om);
       } catch (eom) {
-        if (!silent) showAlert(eom.message || "Không lấy được dữ liệu (OM)");
+        if (!silent) showAlert(eom.message || "Failed to fetch data (OM)");
         return;
       }
     }
@@ -639,7 +639,7 @@ async function searchByCity(city, { silent = false } = {}) {
         clearAlert();
         return;
       } catch (eom) {
-        if (!silent) showAlert(eom.message || "Không tìm thấy thành phố");
+        if (!silent) showAlert(eom.message || "City not found");
         return;
       }
     }
@@ -675,7 +675,7 @@ async function searchByCity(city, { silent = false } = {}) {
         addToHistory(label2);
         clearAlert();
       } catch (eom) {
-        showAlert(e.message || err.message || eom.message || "Không tìm thấy thành phố");
+        showAlert(e.message || err.message || eom.message || "City not found");
       }
     }
   }
@@ -684,7 +684,7 @@ async function searchByCity(city, { silent = false } = {}) {
 function useGeolocation({ silent = false, onFail } = {}) {
   clearAlert();
   if (!navigator.geolocation) {
-    if (!silent) showAlert("Trình duyệt không hỗ trợ Geolocation");
+    if (!silent) showAlert("Geolocation is not supported by this browser");
     if (onFail) onFail();
     return;
   }
@@ -692,7 +692,7 @@ function useGeolocation({ silent = false, onFail } = {}) {
   if (!apiKey) return;
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
-    let label = "Vị trí hiện tại";
+    let label = "Current location";
     try { label = await reverseGeocode(latitude, longitude) || label; } catch {}
     await updateWeatherByCoords(latitude, longitude, label, { silent });
     try {
@@ -706,7 +706,7 @@ function useGeolocation({ silent = false, onFail } = {}) {
       }, () => {}, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 });
     } catch {}
   }, (err) => {
-    if (!silent) showAlert("Không thể lấy vị trí: " + (err.message || ""));
+    if (!silent) showAlert("Unable to get location: " + (err.message || ""));
     if (onFail) onFail();
   }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
 }
@@ -733,7 +733,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const cached = getLastCoords();
     if (cached) {
       (async () => {
-        let label = "Vị trí gần đây";
+        let label = "Recent location";
         try { label = await reverseGeocode(cached.lat, cached.lon) || label; } catch {}
         await updateWeatherByCoords(cached.lat, cached.lon, label, { silent: true });
       })();
@@ -868,14 +868,14 @@ function computeMoonPhase(date) {
   const now = date.getTime() / 1000;
   const newMoon = Date.UTC(2001,0,24,13,0,0) / 1000;
   const phase = ((now - newMoon) % lp) / lp; // 0..1
-  if (phase < 0.03 || phase > 0.97) return { label: 'Trăng non', icon: '🌑' };
-  if (phase < 0.22) return { label: 'Lưỡi liềm đầu', icon: '🌒' };
-  if (phase < 0.28) return { label: 'Bán nguyệt đầu', icon: '🌓' };
-  if (phase < 0.47) return { label: 'Khuyết đầu', icon: '🌔' };
-  if (phase < 0.53) return { label: 'Trăng tròn', icon: '🌕' };
-  if (phase < 0.72) return { label: 'Khuyết cuối', icon: '🌖' };
-  if (phase < 0.78) return { label: 'Bán nguyệt cuối', icon: '🌗' };
-  return { label: 'Lưỡi liềm cuối', icon: '🌘' };
+  if (phase < 0.03 || phase > 0.97) return { label: 'New Moon', icon: '🌑' };
+  if (phase < 0.22) return { label: 'Waxing Crescent', icon: '🌒' };
+  if (phase < 0.28) return { label: 'First Quarter', icon: '🌓' };
+  if (phase < 0.47) return { label: 'Waxing Gibbous', icon: '🌔' };
+  if (phase < 0.53) return { label: 'Full Moon', icon: '🌕' };
+  if (phase < 0.72) return { label: 'Waning Gibbous', icon: '🌖' };
+  if (phase < 0.78) return { label: 'Last Quarter', icon: '🌗' };
+  return { label: 'Waning Crescent', icon: '🌘' };
 }
 
 function updateFxTopOffset() {

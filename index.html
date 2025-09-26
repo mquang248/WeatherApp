@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,9 +23,9 @@
 
     <div class="controls">
       <form id="search-form" class="search" autocomplete="off">
-        <input id="city-input" type="text" placeholder="Nhập tên thành phố" aria-label="Thành phố" />
-        <button type="submit" title="Tìm kiếm" aria-label="Tìm kiếm">Tìm</button>
-        <button type="button" id="btn-location" class="ghost" title="Lấy vị trí hiện tại" aria-label="Lấy vị trí hiện tại">➤</button>
+        <input id="city-input" type="text" placeholder="Enter city" aria-label="City" />
+        <button type="submit" title="Search" aria-label="Search">Search</button>
+        <button type="button" id="btn-location" class="ghost" title="Use current location" aria-label="Use current location">➤</button>
       </form>
 
       
@@ -39,30 +39,30 @@
     <section id="current" class="card current-card">
       <div class="current-vertical">
         <div class="c-row city-row">🏙 <span id="current-city">—</span></div>
-        <div class="c-row temp-row">🌡 <span id="current-temp">--°C</span> <span class="feel">(Cảm giác: <span id="current-feels">--°C</span>)</span></div>
+        <div class="c-row temp-row">🌡 <span id="current-temp">--°C</span> <span class="feel">(Feels like: <span id="current-feels">--°C</span>)</span></div>
         <div class="c-row desc-row">🌥️ <span id="current-desc">—</span></div>
-        <div class="c-row hw-row">💧 Độ ẩm: <span id="current-humidity">—</span>% &nbsp;&nbsp; 🌬️ Gió: <span id="current-wind">—</span></div>
-        <div class="c-row sun-row">🌅Bình Minh: <span id="current-sunrise">--:--</span> &nbsp;&nbsp; 🌇 Hoàng Hôn: <span id="current-sunset">--:--</span></div> 
-        <div class="c-row uv-row">🔆 Chỉ số UV: <strong id="current-uv">—</strong></div>
+        <div class="c-row hw-row">💧 Humidity: <span id="current-humidity">—</span>% &nbsp;&nbsp; 🌬️ Wind: <span id="current-wind">—</span></div>
+        <div class="c-row sun-row">🌅Sunrise: <span id="current-sunrise">--:--</span> &nbsp;&nbsp; 🌇 Sunset: <span id="current-sunset">--:--</span></div> 
+        <div class="c-row uv-row">🔆 UV Index: <strong id="current-uv">—</strong></div>
         <hr />
         <hr />
-        <div class="c-row astro-title">🌠 Trường Ca Nhật Nguyệt</div>
-        <div class="c-row">Giai đoạn mặt trăng: <strong id="astro-moon">—</strong></div>
-        <div class="c-row">Độ dài ngày/đêm: <strong id="astro-daylen">—</strong></div>
-        <div class="c-row">Hoạt động gợi ý: <strong id="astro-suggest">—</strong></div>
-        <div class="c-row">Gợi ý hành động: <strong id="daily-tip">—</strong></div>
+        <div class="c-row astro-title">🌠 Astronomy</div>
+        <div class="c-row">Moon phase: <strong id="astro-moon">—</strong></div>
+        <div class="c-row">Day/Night length: <strong id="astro-daylen">—</strong></div>
+        <div class="c-row">Suggested activity: <strong id="astro-suggest">—</strong></div>
+        <div class="c-row">Daily tip: <strong id="daily-tip">—</strong></div>
         <div class="c-row updated-row"><span class="meta small" id="current-updated">—</span></div>
       </div>
     </section>
 
     <section class="card forecast-card right-stack">
       <div>
-      <h2>Dự báo 5 ngày</h2>
+      <h2>5-Day Forecast</h2>
       <div id="forecast" class="forecast-grid"></div>
       </div>
 
       <div class="card hourly-card" style="margin:0">
-        <h2>Dự báo theo giờ</h2>
+        <h2>Hourly Forecast</h2>
         <div id="hourly" class="hourly-strip" aria-live="polite"></div>
       </div>
     </section>

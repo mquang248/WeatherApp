@@ -154,6 +154,10 @@ body {
   padding: 12px;
   border-radius: 12px;
   background: #ffffff66;
+  text-align: center;
+  justify-items: center;
+  border: 1px solid rgba(15,23,42,0.12);
+  box-shadow: 0 2px 10px rgba(2,6,23,0.06);
 }
 .forecast-item .day { font-weight: 600; }
 .forecast-item .fi-icon { font-size: 28px; }
@@ -173,6 +177,8 @@ body {
   padding: 10px;
   border-radius: 12px;
   background: #ffffff66;
+  border: 1px solid rgba(15,23,42,0.14);
+  box-shadow: 0 2px 8px rgba(2,6,23,0.06);
   min-width: 110px;
   text-align: center;
 }
@@ -352,6 +358,7 @@ body {
 
   /* Forecast rows: day | desc | temp at right */
   .forecast-item { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; background: rgba(255,255,255,0.85); border: 1px solid rgba(15,23,42,0.06); }
+  .forecast-item { text-align: left; justify-items: stretch; }
   .forecast-item .day { justify-self: start; }
   .forecast-item .fi-icon { grid-column: 2; }
   .forecast-item .fi-desc { display: none; }
