@@ -869,7 +869,7 @@ function computeMoonPhase(date) {
   const newMoon = Date.UTC(2001,0,24,13,0,0) / 1000;
   const phase = ((now - newMoon) % lp) / lp; // 0..1
   if (phase < 0.03 || phase > 0.97) return { label: 'New Moon', icon: '🌑' };
-  if (phase < 0.22) return { label: 'Waxing Crescent', icon: '🌒' };
+  if (phase < 0.22) return { label: 'Waxing Crescent', icon: '🌙' };
   if (phase < 0.28) return { label: 'First Quarter', icon: '🌓' };
   if (phase < 0.47) return { label: 'Waxing Gibbous', icon: '🌔' };
   if (phase < 0.53) return { label: 'Full Moon', icon: '🌕' };
